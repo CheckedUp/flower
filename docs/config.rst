@@ -200,6 +200,13 @@ max_tasks
 
 Maximum number of tasks to keep in memory (by default, `max_tasks=10000`)
 
+.. _ignore_tasks:
+
+ignore_tasks
+~~~~~~~~~
+
+List of tasks to ignore in the dashboard separated by comma(by default `ignore_tasks=[]`)
+
 .. _natural_time:
 
 natural_time

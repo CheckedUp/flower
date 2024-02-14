@@ -30,8 +30,8 @@ services:
     depends_on:
       - redis
   flower:
-    build: ./
-    command: python -m flower -A tasks
+    image: flower:0.9.8
+    command: --persistent=True --broker_api=redis://redis:6379 --ignore-tasks=tasks.sleep
     volumes:
       - ./examples:/data
     working_dir: /data

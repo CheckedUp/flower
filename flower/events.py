@@ -33,10 +33,12 @@ class PrometheusMetrics(object):
 class EventsState(State):
     # EventsState object is created and accessed only from ioloop thread
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, ignore_tasks=None, *args, **kwargs):
         super(EventsState, self).__init__(*args, **kwargs)
         self.counter = collections.defaultdict(Counter)
         self.metrics = PrometheusMetrics()
+        self.ignore_tasks = ignore_tasks or []
+        self.ignore_uuids = []
 
     def event(self, event):
         worker_name = event['hostname']
@@ -58,6 +60,11 @@ class EventsState(State):
         # Send event to api subscribers (via websockets)
         classname = api.events.getClassName(event_type)
         cls = getattr(api.events, classname, None)
+        if event.get("name") in self.ignore_tasks:
+            self.ignore_uuids.append(event["uuid"])
+            return
+        elif event.get("uuid") in self.ignore_uuids:
+            return
         if cls:
             cls.send_message(event)
 
@@ -70,6 +77,7 @@ class Events(threading.Thread):
 
     def __init__(self, capp, db=None, persistent=False,
                  enable_events=True, io_loop=None, state_save_interval=0,
+                 ignore_tasks=None,
                  **kwargs):
         threading.Thread.__init__(self)
         self.daemon = True
@@ -95,7 +103,7 @@ class Events(threading.Thread):
                                                          state_save_interval)
 
         if not self.state:
-            self.state = EventsState(**kwargs)
+            self.state = EventsState(ignore_tasks=ignore_tasks, **kwargs)
 
         self.timer = PeriodicCallback(self.on_enable_events,
                                       self.events_enable_interval)

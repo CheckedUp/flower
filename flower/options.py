@@ -31,6 +31,8 @@ define("max_workers", type=int, default=5000,
        help="maximum number of workers to keep in memory")
 define("max_tasks", type=int, default=10000,
        help="maximum number of tasks to keep in memory")
+define("ignore_tasks", type=lambda x: x.split(","), default=[],
+       help="list of tasks to ignore in dashboard")
 define("db", type=str, default='flower',
        help="flower database file")
 define("persistent", type=bool, default=False,
