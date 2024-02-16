@@ -145,7 +145,7 @@ class FlowerCommand(Command):
             pformat(sorted(self.app.tasks.keys()))
         )
         logger.info(
-            "Tasks to ignore: \n%s",
+            "Ignored tasks: \n%s",
             pformat(sorted(options.ignore_tasks))
         )
         logger.debug('Settings: %s', pformat(settings))

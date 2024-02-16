@@ -14,6 +14,7 @@ WORKDIR $FLOWER_DATA_DIR
 
 VOLUME $FLOWER_DATA_DIR
 ADD . $FLOWER_DATA_DIR
-RUN pip install --no-cache-dir -r requirements/dev.txt importlib-metadata==4.13.0
-RUN python setup.py install
+
+RUN pip install . && pip install importlib-metadata==4.13.0 redis==3.5.3
+
 ENTRYPOINT ["flower"]
